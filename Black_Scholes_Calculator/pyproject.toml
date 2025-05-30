@@ -1,0 +1,11 @@
+[project]
+name = "blackscholescalculator"
+version = "1.0"
+description = "A CLI utility for performing a black-scholes calculation"
+requires-python = ">=3.8"
+dependencies = [
+    "scipy"
+]
+
+[project.scripts]
+blackscholes = "BlackScholes:main"

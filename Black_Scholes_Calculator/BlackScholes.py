@@ -1,7 +1,6 @@
 import argparse
 import math
-
-
+from scipy.stats import norm
 
 def main():
     parser = argparse.ArgumentParser(description="Receive variable inputs from user")
@@ -21,8 +20,19 @@ def main():
     vol = args.volatility
 
     d1_value = d1_compute(spot, strike, interest, vol, time)
+    d2_value = d2_compute(d1_value, vol, time)
 
-    print(d1_value)
+    normD1 = norm.cdf(d1_value)
+    normD2 = norm.cdf(d2_value)
+
+    funcPartOne = normD1 * spot
+    funcPartTwo = math.exp(-(interest*time))
+    funcPartTwo = funcPartTwo * strike
+    funcPartTwo = funcPartTwo * normD2
+
+    funcMain = funcPartOne - funcPartTwo
+
+    print(funcMain)
 
 def d1_compute(spot, strike, interest, volatility, time):
     d1Log = math.log(spot/strike)
@@ -36,5 +46,13 @@ def d1_compute(spot, strike, interest, volatility, time):
     d1 = d1Numerator/d1Denominator
 
     return d1
+
+def d2_compute(d1, volatility, time):
+    d2Volatility = math.sqrt(time)
+    d2Volatility = d2Volatility*volatility
+
+    d2 = d1 - d2Volatility
+
+    return d2
 
 main()
